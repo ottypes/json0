@@ -231,3 +231,54 @@ is equivalent to a delete followed by an insert:
 
 There is (unfortunately) no equivalent for list move with objects.
 
+
+---
+
+# Commentary
+
+This library was written a couple of years ago by Jeremy Apthorp. It was
+originally written in coffeescript as part of ShareJS, and then it got pulled
+out into the share/ottypes library and its finally landed here.
+
+The type uses the list-of-op-components model, where each operation makes a
+series of individual changes to a document. Joseph now thinks this is a
+terrible idea because it doesn't scale well to large operations - it has
+(N<sup>2</sup> instead of 2N complexity).
+
+Jeremy and Joseph have talked about rewriting this library to instead make each
+operation be a sparse traversal of the document. But it was obnoxiously
+difficult to implement JSON OT correctly in the first place - it'll probably
+take both of us thinking about nothing else for a few weeks to make that
+happen.
+
+When it was written, the embedded text0 type was sharejs's text type. Its since
+been rewritten to make each operation be a traversal, but the JSON OT type
+still embeds the old type. As such, that old text type is included in this
+repository. If you want to use text0 in your own project, I'd be very happy to
+pull it out of here and make it its own module. However, I recommend that you
+just use the new text type. Its simpler and faster.
+
+---
+
+# License
+
+All code contributed to this repository is licensed under the standard MIT license:
+
+Copyright 2011 ottypes library contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following condition:
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
