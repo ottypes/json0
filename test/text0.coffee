@@ -1,8 +1,8 @@
-# Tests for the non-composable text text0, text0.
+# Tests for the embedded non-composable text type text0.
 
 assert = require 'assert'
-randomizer = require '../randomizer'
-{text0} = require '../lib'
+fuzzer = require 'ot-fuzzer'
+text0 = require '../lib/text0'
 
 describe 'text0', ->
   describe 'compose', ->
@@ -115,5 +115,5 @@ describe 'text0', ->
 
   describe 'randomizer', -> it 'passes', ->
     @slow 4000
-    randomizer text0
+    fuzzer text0, require('./text0-generator')
 

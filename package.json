@@ -1,0 +1,33 @@
+{
+  "name": "ot-json0",
+  "version": "1.0.0",
+  "description": "JSON OT type",
+  "main": "lib/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "ot-fuzzer": "^1.0.0",
+    "mocha": "^1.20.1"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ottypes/json0"
+  },
+  "keywords": [
+    "ot",
+    "json",
+    "sharejs",
+    "operational-transformation"
+  ],
+  "author": "Joseph Gentle <me@josephg.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ottypes/json0/issues"
+  },
+  "homepage": "https://github.com/ottypes/json0"
+}
