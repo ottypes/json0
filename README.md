@@ -6,10 +6,11 @@ The JSON OT type can be used to edit arbitrary JSON documents.
 
 The JSON OT type supports the following operations:
 
-- Embedded string editing, using the old text0 OT type
-- Move list items in a list, shuffling adjacent list items as needed
-- Object insert / object delete
+- Insert/delete/move/replace items in a list, shuffling adjacent list items as needed
+- Object insert/delete/replace
 - Atomic numerical add operation
+- Embed arbitrary subtypes
+- Embedded string editing, using the old text0 OT type as a subtype
 
 JSON0 is an *invertable* type - which is to say, all operations have an inverse
 operation which will undo the original op. As such, all operations which delete
@@ -17,7 +18,6 @@ content add the content to be deleted inline in the operation.
 
 But its not perfect - here's a list of things it *cannot* do:
 
-- Embed arbitrary subtypes
 - Object-move
 - Set if null (object insert with first writer wins semantics)
 - Efficient list insert-of-many-items
@@ -54,8 +54,6 @@ into the array.
  op                                    | Description
 ---------------------------------------|-------------------------------------
 `{p:[path], na:x}`                     | adds `x` to the number at `[path]`.
-`{p:[path,offset], si:s}`              | inserts the string `s` at offset `offset` into the string at `[path]`.
-`{p:[path,offset], sd:s}`              | deletes the string `s` at offset `offset` from the string at `[path]`.
 `{p:[path,idx], li:obj}`               | inserts the object `obj` before the item at `idx` in the list at `[path]`.
 `{p:[path,idx], ld:obj}`               | deletes the object `obj` from the index `idx` in the list at `[path]`.
 `{p:[path,idx], ld:before, li:after}`  | replaces the object `before` at the index `idx` in the list at `[path]` with the object `after`.
@@ -63,6 +61,9 @@ into the array.
 `{p:[path,key], oi:obj}`               | inserts the object `obj` into the object at `[path]` with key `key`.
 `{p:[path,key], od:obj}`               | deletes the object `obj` with key `key` from the object at `[path]`.
 `{p:[path,key], od:before, oi:after}`  | replaces the object `before` with the object `after` at key `key` in the object at `[path]`.
+`{p:[path], t:subtype, o:subtypeOp}`   | applies the subtype op `o` of type `t` to the object at `[path]`
+`{p:[path,offset], si:s}`              | (**DEPRECATED**) inserts the string `s` at offset `offset` into the string at `[path]`.
+`{p:[path,offset], sd:s}`              | (**DEPRECATED**) deletes the string `s` at offset `offset` from the string at `[path]`.
 
 ---
 
@@ -86,43 +87,6 @@ Usage:
     {p:PATH, na:X}
 
 Adds X to the number at PATH. If you want to subtract, add a negative number.
-
----
-
-### String operations
-
-If the content at a path is a string, an operation can edit the string
-in-place, either deleting characters or inserting characters.
-
-To edit a string, add the string offset to the path. For example, given the
-following object:
-
-    {'key':[100,'abcde']}
-
-If you wanted to delete the `'d'` from the string `'abcde'`, you would use the following operation:
-
-    [{p:['key',1,3],sd:'d'}]
-
-Note the path. The components, in order, are the key to the list, the index to
-the `'abcde'` string, and then the offset to the `'d'` character in the string.
-
-#### Insert into a string
-
-Usage:
-
-    {p:PATH, si:TEXT}
-
-Insert `TEXT` at the location specified by `PATH`. The path must specify an
-offset in a string.
-
-#### Delete from a string
-
-Usage:
-
-    {p:PATH, sd:TEXT}
-
-Delete `TEXT` at the location specified by `PATH`. The path must specify an
-offset in a string. `TEXT` must be contained at the location specified.
 
 ---
 
@@ -231,6 +195,101 @@ is equivalent to a delete followed by an insert:
 
 There is (unfortunately) no equivalent for list move with objects.
 
+
+---
+
+### Subtype operations
+
+Usage:
+  
+    {p:PATH, t:SUBTYPE, o:OPERATION}
+    
+`PATH` is the path to the object that will be modified by the subtype.
+`SUBTYPE` is the name of the subtype, e.g. `"text0"`.
+`OPERATION` is the subtype operation itself.
+
+To register a subtype, call `json0.registerSubtype` with another OT type.
+Specifically, a subtype is a JavaScript object with the following methods:
+
+* `apply`
+* `transform`
+* `compose`
+* `invert`
+
+See the [OT types documentation](https://github.com/ottypes/docs) for details on these methods.
+
+#### Text subtype
+
+The old string operations have been deprecated in favor of using the `text0` type as a subtype.
+The `text0` type is automatically registered as a subtype by `json0` for backward compatibility.
+
+To edit a string, create a `text0` subtype op. For example, given the
+following object:
+
+    {'key':[100,'abcde']}
+
+If you wanted to delete the `'d'` from the string `'abcde'`, you would use the following operation:
+
+    [{p:['key',1], t: 'text0', o:[{p:3, d:'d'}]}
+
+Note the path. The components, in order, are the key to the list, and the index to
+the `'abcde'` string. The offset to the `'d'` character in the string is given in
+the subtype operation.
+
+##### Insert into a string
+
+Usage:
+
+    {p:PATH, t:'text0', o:[{p:OFFSET, i:TEXT}]}
+    
+Insert `TEXT` to the string specified by `PATH` at the position specified by `OFFSET`.
+
+##### Delete from a string
+
+Usage:
+
+    {p:PATH, t:'text0', o:[{p:OFFSET, d:TEXT}]}
+    
+Delete `TEXT` in the string specified by `PATH` at the position specified by `OFFSET`.
+
+---
+
+### String operations (**DEPRECATED**)
+
+**These operations have been deprecated in favor of using the `text0` type as a subtype. See above for details.**
+
+If the content at a path is a string, an operation can edit the string
+in-place, either deleting characters or inserting characters.
+
+To edit a string, add the string offset to the path. For example, given the
+following object:
+
+    {'key':[100,'abcde']}
+
+If you wanted to delete the `'d'` from the string `'abcde'`, you would use the following operation:
+
+    [{p:['key',1,3],sd:'d'}]
+
+Note the path. The components, in order, are the key to the list, the index to
+the `'abcde'` string, and then the offset to the `'d'` character in the string.
+
+#### Insert into a string
+
+Usage:
+
+    {p:PATH, si:TEXT}
+
+Insert `TEXT` at the location specified by `PATH`. The path must specify an
+offset in a string.
+
+#### Delete from a string
+
+Usage:
+
+    {p:PATH, sd:TEXT}
+
+Delete `TEXT` at the location specified by `PATH`. The path must specify an
+offset in a string. `TEXT` must be contained at the location specified.
 
 ---
 
