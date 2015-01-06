@@ -77,16 +77,16 @@ describe 'text0', ->
       testUnchanged []
       testUnchanged [{i:'asdf', p:100}]
       testUnchanged [{i:'asdf', p:100}, {d:'fdsa', p:123}]
-    
+
     it 'adds missing p:0', ->
       assert.deepEqual [{i:'abc', p:0}], text0.normalize [{i:'abc'}]
       assert.deepEqual [{d:'abc', p:0}], text0.normalize [{d:'abc'}]
       assert.deepEqual [{i:'abc', p:0}, {d:'abc', p:0}], text0.normalize [{i:'abc'}, {d:'abc'}]
-    
+
     it 'converts op to an array', ->
       assert.deepEqual [{i:'abc', p:0}], text0.normalize {i:'abc', p:0}
       assert.deepEqual [{d:'abc', p:0}], text0.normalize {d:'abc', p:0}
-    
+
     it 'works with a really simple op', ->
       assert.deepEqual [{i:'abc', p:0}], text0.normalize {i:'abc'}
 
@@ -114,6 +114,7 @@ describe 'text0', ->
 
 
   describe 'randomizer', -> it 'passes', ->
+    @timeout 4000
     @slow 4000
     fuzzer text0, require('./text0-generator')
 
