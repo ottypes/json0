@@ -379,10 +379,13 @@ genTests = (type) ->
 
   describe 'randomizer', ->
     it 'passes', ->
+      @timeout 6000
       @slow 6000
       fuzzer type, require('./json0-generator'), 1000
 
     it 'passes with string subtype', ->
+      @timeout 4000
+      @slow 4000
       type._testStringSubtype = true # hack
       fuzzer type, require('./json0-generator'), 1000
       delete type._testStringSubtype
