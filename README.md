@@ -62,8 +62,8 @@ into the array.
 `{p:[path,key], od:obj}`               | deletes the object `obj` with key `key` from the object at `[path]`.
 `{p:[path,key], od:before, oi:after}`  | replaces the object `before` with the object `after` at key `key` in the object at `[path]`.
 `{p:[path], t:subtype, o:subtypeOp}`   | applies the subtype op `o` of type `t` to the object at `[path]`
-`{p:[path,offset], si:s}`              | (**DEPRECATED**) inserts the string `s` at offset `offset` into the string at `[path]`.
-`{p:[path,offset], sd:s}`              | (**DEPRECATED**) deletes the string `s` at offset `offset` from the string at `[path]`.
+`{p:[path,offset], si:s}`              | inserts the string `s` at offset `offset` into the string at `[path]` (uses subtypes internally).
+`{p:[path,offset], sd:s}`              | deletes the string `s` at offset `offset` from the string at `[path]` (uses subtypes internally).
 
 ---
 
@@ -220,8 +220,9 @@ See the [OT types documentation](https://github.com/ottypes/docs) for details on
 
 #### Text subtype
 
-The old string operations have been deprecated in favor of using the `text0` type as a subtype.
-The `text0` type is automatically registered as a subtype by `json0` for backward compatibility.
+The old string operations are still supported (see below) but are now implemented internally as a subtype
+using the `text0` type. You can either continue to use the original `si` and `sd` ops documented below,
+or use the `text0` type as a subtype yourself.
 
 To edit a string, create a `text0` subtype op. For example, given the
 following object:
@@ -254,9 +255,9 @@ Delete `TEXT` in the string specified by `PATH` at the position specified by `OF
 
 ---
 
-### String operations (**DEPRECATED**)
+### String operations
 
-**These operations have been deprecated in favor of using the `text0` type as a subtype. See above for details.**
+These operations are now internally implemented as subtype operations using the `text0` type, but you can still use them if you like. See above.
 
 If the content at a path is a string, an operation can edit the string
 in-place, either deleting characters or inserting characters.
