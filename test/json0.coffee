@@ -5,6 +5,11 @@ nativetype = require '../lib/json0'
 
 fuzzer = require 'ot-fuzzer'
 
+nativetype.registerSubtype
+  name: 'mock'
+  transform: (a, b, side) ->
+    return { mock: true }
+
 # Cross-transform helper function. Transform server by client and client by
 # server. Returns [server, client].
 transformX = (type, left, right) ->
@@ -95,6 +100,13 @@ genTests = (type) ->
 
       it 'does not throw errors with blank inserts', ->
         assert.deepEqual type.transform([{p:['k'], t:'text0', o:[{p:5, i:''}]}], [{p:['k'], t:'text0', o:[{p:3, i:'a'}]}], 'left'), []
+
+  describe 'subtype with non-array operation', ->
+    describe '#transform()', ->
+      it 'works', ->
+        a = [{p:[], t:'mock', o:'foo'}]
+        b = [{p:[], t:'mock', o:'bar'}]
+        assert.deepEqual type.transform(a, b, 'left'), [{p:[], t:'mock', o:{mock:true}}]
 
   describe 'list', ->
     describe 'apply', ->
