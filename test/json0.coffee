@@ -389,66 +389,66 @@ genTests = (type) ->
       assert.deepEqual [], type.transform [{p:['k'], od:'x'}], [{p:['k'], od:'x'}], 'left'
       assert.deepEqual [], type.transform [{p:['k'], od:'x'}], [{p:['k'], od:'x'}], 'right'
 
-  describe 'cursor', ->
+  describe 'cursor transform', ->
     describe 'string operations', ->
       it 'handles inserts before', ->
-        assert.deepEqual ['key', 10, 3+4], type.transformCursor(['key', 10, 3], {p: ['key', 10, 1], si: 'meow'})
+        assert.deepEqual ['key', 10, 3+4], type.transformPosition(['key', 10, 3], {p: ['key', 10, 1], si: 'meow'})
       it 'handles inserts after', ->
-        assert.deepEqual ['key', 10, 3], type.transformCursor(['key', 10, 3], {p: ['key', 10, 5], si: 'meow'})
+        assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key', 10, 5], si: 'meow'})
       it 'handles inserts at current point with isOwnOp', ->
-        assert.deepEqual ['key', 10, 3+4], type.transformCursor(['key', 10, 3], {p: ['key', 10, 3], si: 'meow'}, true)
+        assert.deepEqual ['key', 10, 3+4], type.transformPosition(['key', 10, 3], {p: ['key', 10, 3], si: 'meow'}, true)
       it 'handles inserts at current point without isOwnOp', ->
-        assert.deepEqual ['key', 10, 3], type.transformCursor(['key', 10, 3], {p: ['key', 10, 3], si: 'meow'})
+        assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key', 10, 3], si: 'meow'})
       it 'handles deletes before', ->
-        assert.deepEqual ['key', 10, 3-2], type.transformCursor(['key', 10, 3], {p: ['key', 10, 0], sd: '12'})
+        assert.deepEqual ['key', 10, 3-2], type.transformPosition(['key', 10, 3], {p: ['key', 10, 0], sd: '12'})
       it 'handles deletes after', ->
-        assert.deepEqual ['key', 10, 3], type.transformCursor(['key', 10, 3], {p: ['key', 10, 3], sd: '12'})
+        assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key', 10, 3], sd: '12'})
       it 'handles deletes at current point', ->
-        assert.deepEqual ['key', 10, 1], type.transformCursor(['key', 10, 3], {p: ['key', 10, 1], sd: 'meow meow'})
+        assert.deepEqual ['key', 10, 1], type.transformPosition(['key', 10, 3], {p: ['key', 10, 1], sd: 'meow meow'})
       it 'ignores irrelevant operations', ->
-        assert.deepEqual ['key', 10, 3], type.transformCursor(['key', 10, 3], {p: ['key', 9, 1], si: 'meow'})
+        assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key', 9, 1], si: 'meow'})
     describe 'number operations', ->
       it 'ignores', ->
-        assert.deepEqual ['key', 10, 3], type.transformCursor(['key', 10, 3], {p: ['key', 10, 3], na: 123})
+        assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key', 10, 3], na: 123})
     describe 'list operations', ->
       it 'handles inserts before', ->
-        assert.deepEqual ['key', 10, 3+1], type.transformCursor(['key', 10, 3], {p: ['key', 10, 3], li: 'meow'})
-        assert.deepEqual ['key', 10+1, 3], type.transformCursor(['key', 10, 3], {p: ['key', 10], li: 'meow'})
+        assert.deepEqual ['key', 10, 3+1], type.transformPosition(['key', 10, 3], {p: ['key', 10, 3], li: 'meow'})
+        assert.deepEqual ['key', 10+1, 3], type.transformPosition(['key', 10, 3], {p: ['key', 10], li: 'meow'})
       it 'handles inserts after', ->
-        assert.deepEqual ['key', 10, 3], type.transformCursor(['key', 10, 3], {p: ['key', 10, 4], li: 'meow'})
-        assert.deepEqual ['key', 10, 3], type.transformCursor(['key', 10, 3], {p: ['key', 11], li: 'meow'})
+        assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key', 10, 4], li: 'meow'})
+        assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key', 11], li: 'meow'})
       it 'handles replacements at current point', ->
-        assert.deepEqual ['key', 10, 3], type.transformCursor(['key', 10, 3], {p: ['key', 10, 3], ld: 'meow1', li: 'meow2'})
-        assert.deepEqual ['key', 10], type.transformCursor(['key', 10, 3], {p: ['key', 10], ld: 'meow1', li: 'meow2'}) # move cursor up tree when parent deleted
+        assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key', 10, 3], ld: 'meow1', li: 'meow2'})
+        assert.deepEqual ['key', 10], type.transformPosition(['key', 10, 3], {p: ['key', 10], ld: 'meow1', li: 'meow2'}) # move cursor up tree when parent deleted
       it 'handles deletes before', ->
-        assert.deepEqual ['key', 10, 3-1], type.transformCursor(['key', 10, 3], {p: ['key', 10, 2], ld: 'meow'})
-        assert.deepEqual ['key', 10-1, 3], type.transformCursor(['key', 10, 3], {p: ['key', 9], ld: 'meow'})
+        assert.deepEqual ['key', 10, 3-1], type.transformPosition(['key', 10, 3], {p: ['key', 10, 2], ld: 'meow'})
+        assert.deepEqual ['key', 10-1, 3], type.transformPosition(['key', 10, 3], {p: ['key', 9], ld: 'meow'})
       it 'handles deletes after', ->
-        assert.deepEqual ['key', 10, 3], type.transformCursor(['key', 10, 3], {p: ['key', 10, 4], ld: 'meow'})
-        assert.deepEqual ['key', 10, 3], type.transformCursor(['key', 10, 3], {p: ['key', 11], ld: 'meow'})
+        assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key', 10, 4], ld: 'meow'})
+        assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key', 11], ld: 'meow'})
       it 'handles deletes at current point', ->
-        assert.deepEqual ['key', 10, 3], type.transformCursor(['key', 10, 3], {p: ['key', 10, 3], ld: 'meow'})
-        assert.deepEqual ['key', 10], type.transformCursor(['key', 10, 3], {p: ['key', 10], ld: 'meow'})
+        assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key', 10, 3], ld: 'meow'})
+        assert.deepEqual ['key', 10], type.transformPosition(['key', 10, 3], {p: ['key', 10], ld: 'meow'})
       it 'handles movements of current point', ->
-        assert.deepEqual ['key', 10, 20], type.transformCursor(['key', 10, 3], {p: ['key', 10, 3], lm: 20})
-        assert.deepEqual ['key', 20, 3], type.transformCursor(['key', 10, 3], {p: ['key', 10], lm: 20})
+        assert.deepEqual ['key', 10, 20], type.transformPosition(['key', 10, 3], {p: ['key', 10, 3], lm: 20})
+        assert.deepEqual ['key', 20, 3], type.transformPosition(['key', 10, 3], {p: ['key', 10], lm: 20})
       it 'ignores irrelevant operations', ->
-        assert.deepEqual ['key', 10, 20], type.transformCursor(['key', 10, 3], {p: ['key', 10, 2], lm: 20})
-        assert.deepEqual ['key', 20, 3], type.transformCursor(['key', 10, 3], {p: ['key', 9], lm: 20})
+        assert.deepEqual ['key', 10, 20], type.transformPosition(['key', 10, 3], {p: ['key', 10, 2], lm: 20})
+        assert.deepEqual ['key', 20, 3], type.transformPosition(['key', 10, 3], {p: ['key', 9], lm: 20})
     describe 'dict operations', ->
       it 'ignores irrelevant inserts and deletes', ->
-        assert.deepEqual ['key', 10, 3], type.transformCursor(['key', 10, 3], {p: ['key2'], oi: 'meow'})
-        assert.deepEqual ['key', 10, 3], type.transformCursor(['key', 10, 3], {p: ['key2'], od: 'meow'})
+        assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key2'], oi: 'meow'})
+        assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key2'], od: 'meow'})
       it 'handles deletes at current point', ->
-        assert.deepEqual [], type.transformCursor(['key', 0, 3], {p: ['key'], od: ['meow123']})
-        assert.deepEqual ['key', 10], type.transformCursor(['key', 0, 'key2'], {p: ['key', 0, 'key2'], od: ['meow123']})
+        assert.deepEqual [], type.transformPosition(['key', 0, 3], {p: ['key'], od: ['meow123']})
+        assert.deepEqual ['key', 10], type.transformPosition(['key', 0, 'key2'], {p: ['key', 0, 'key2'], od: ['meow123']})
       it 'handles replacements at current point', ->
-        assert.deepEqual ['key'], type.transformCursor(['key', 0, 3], {p: ['key'], od: ['meow123'], oi: 'newobj'})
-        assert.deepEqual ['key', 10, 'key2'], type.transformCursor(['key', 0, 'key2'], {p: ['key', 0, 'key2'], od: ['meow123'], oi: 'newobj'})
+        assert.deepEqual ['key'], type.transformPosition(['key', 0, 3], {p: ['key'], od: ['meow123'], oi: 'newobj'})
+        assert.deepEqual ['key', 10, 'key2'], type.transformPosition(['key', 0, 'key2'], {p: ['key', 0, 'key2'], od: ['meow123'], oi: 'newobj'})
     describe 'subtype operations', ->
       it 'warns that they are unsupported', ->
         assert.throws(->
-          type.transformCursor(['key', 10, 3], {p: ['key', 10, 3], t: 'text0', o: 'testop'})
+          type.transformPosition(['key', 10, 3], {p: ['key', 10, 3], t: 'text0', o: 'testop'})
         , /subtype.*unsupported/)
 
   describe 'randomizer', ->
