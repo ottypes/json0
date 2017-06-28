@@ -389,7 +389,7 @@ genTests = (type) ->
       assert.deepEqual [], type.transform [{p:['k'], od:'x'}], [{p:['k'], od:'x'}], 'left'
       assert.deepEqual [], type.transform [{p:['k'], od:'x'}], [{p:['k'], od:'x'}], 'right'
 
-  describe 'cursor transform', ->
+  describe 'transformCursor', ->
     describe 'string operations', ->
       it 'handles inserts before', ->
         assert.deepEqual ['key', 10, 3+4], type.transformPosition(['key', 10, 3], {p: ['key', 10, 1], si: 'meow'})
@@ -441,10 +441,10 @@ genTests = (type) ->
         assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key2'], od: 'meow'})
       it 'handles deletes at current point', ->
         assert.deepEqual [], type.transformPosition(['key', 0, 3], {p: ['key'], od: ['meow123']})
-        assert.deepEqual ['key', 10], type.transformPosition(['key', 0, 'key2'], {p: ['key', 0, 'key2'], od: ['meow123']})
+        assert.deepEqual ['key', 0], type.transformPosition(['key', 0, 'key2'], {p: ['key', 0, 'key2'], od: ['meow123']})
       it 'handles replacements at current point', ->
         assert.deepEqual ['key'], type.transformPosition(['key', 0, 3], {p: ['key'], od: ['meow123'], oi: 'newobj'})
-        assert.deepEqual ['key', 10, 'key2'], type.transformPosition(['key', 0, 'key2'], {p: ['key', 0, 'key2'], od: ['meow123'], oi: 'newobj'})
+        assert.deepEqual ['key', 0, 'key2'], type.transformPosition(['key', 0, 'key2'], {p: ['key', 0, 'key2'], od: ['meow123'], oi: 'newobj'})
     describe 'subtype operations', ->
       it 'warns that they are unsupported', ->
         assert.throws(->
