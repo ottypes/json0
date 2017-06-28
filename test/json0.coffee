@@ -449,11 +449,6 @@ genTests = (type) ->
       it 'handles replacements at current point', ->
         assert.deepEqual ['key'], type.transformCursor(['key', 0, 3], [{p: ['key'], od: ['meow123'], oi: 'newobj'}])
         assert.deepEqual ['key', 0, 'key2'], type.transformCursor(['key', 0, 'key2'], [{p: ['key', 0, 'key2'], od: ['meow123'], oi: 'newobj'}])
-    describe 'subtype operations', ->
-      it 'warns that they are unsupported', ->
-        assert.throws(->
-          type.transformCursor(['key', 10, 3], [{p: ['key', 10, 3], t: 'text0', o: 'testop'}])
-        , /subtype.*unsupported/)
 
   describe 'randomizer', ->
     @timeout 20000
