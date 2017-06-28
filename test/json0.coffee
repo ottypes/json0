@@ -427,14 +427,18 @@ genTests = (type) ->
         assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key', 10, 4], ld: 'meow'})
         assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key', 11], ld: 'meow'})
       it 'handles deletes at current point', ->
-        assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key', 10, 3], ld: 'meow'})
-        assert.deepEqual ['key', 10], type.transformPosition(['key', 10, 3], {p: ['key', 10], ld: 'meow'})
+        assert.deepEqual ['key', 10], type.transformPosition(['key', 10, 3], {p: ['key', 10, 3], ld: 'meow'})
+        assert.deepEqual ['key'], type.transformPosition(['key', 10, 3], {p: ['key', 10], ld: 'meow'})
       it 'handles movements of current point', ->
         assert.deepEqual ['key', 10, 20], type.transformPosition(['key', 10, 3], {p: ['key', 10, 3], lm: 20})
         assert.deepEqual ['key', 20, 3], type.transformPosition(['key', 10, 3], {p: ['key', 10], lm: 20})
-      it 'ignores irrelevant operations', ->
-        assert.deepEqual ['key', 10, 20], type.transformPosition(['key', 10, 3], {p: ['key', 10, 2], lm: 20})
-        assert.deepEqual ['key', 20, 3], type.transformPosition(['key', 10, 3], {p: ['key', 9], lm: 20})
+      it 'handles movements of other points', ->
+        assert.deepEqual ['key', 10, 2], type.transformPosition(['key', 10, 3], {p: ['key', 10, 1], lm: 20})
+        assert.deepEqual ['key', 10, 4], type.transformPosition(['key', 10, 3], {p: ['key', 10, 5], lm: 3})
+        assert.deepEqual ['key', 10, 4], type.transformPosition(['key', 10, 3], {p: ['key', 10, 5], lm: 1})
+        assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key', 10, 10], lm: 20})
+        assert.deepEqual ['key', 10, 2], type.transformPosition(['key', 10, 3], {p: ['key', 10, 2], lm: 3})
+        assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key', 10, 2], lm: 1})
     describe 'dict operations', ->
       it 'ignores irrelevant inserts and deletes', ->
         assert.deepEqual ['key', 10, 3], type.transformPosition(['key', 10, 3], {p: ['key2'], oi: 'meow'})
