@@ -296,7 +296,7 @@ offset in a string. `TEXT` must be contained at the location specified.
 
 # Commentary
 
-This library was written a couple of years ago by Jeremy Apthorp. It was
+This library was written a couple of years ago by [Jeremy Apthorp](https://github.com/nornagon). It was
 originally written in coffeescript as part of ShareJS, and then it got pulled
 out into the share/ottypes library and its finally landed here.
 
