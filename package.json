@@ -1,6 +1,6 @@
 {
-  "name": "ot-json0",
-  "version": "1.0.1",
+  "name": "json00",
+  "version": "1.1.0",
   "description": "JSON OT type",
   "main": "lib/index.js",
   "directories": {
@@ -25,10 +25,13 @@
     "sharejs",
     "operational-transformation"
   ],
-  "author": "Joseph Gentle <me@josephg.com>",
+  "contributors": [
+    "Joseph Gentle <me@josephg.com>",
+    "Robert Lord <hello@lord.io>"
+  ],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ottypes/json0/issues"
+    "url": "https://github.com/wheatco/json00/issues"
   },
-  "homepage": "https://github.com/ottypes/json0"
+  "homepage": "https://github.com/wheatco/json00"
 }
