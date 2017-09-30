@@ -1,4 +1,8 @@
-# JSON0 OT Type
+<p align="center">
+  <img src="https://raw.githubusercontent.com/lord/img/master/logo-json00.png" alt="JSON 00: Operational Transform Type" width="226">
+  <br>
+  <a href="https://travis-ci.org/wheatco/json00"><img src="https://travis-ci.org/wheatco/json00.svg?branch=master" alt="Build Status"></a>
+</p>
 
 The JSON OT type can be used to edit arbitrary JSON documents.
 
