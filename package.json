@@ -1,6 +1,6 @@
 {
   "name": "json00",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "JSON OT type",
   "main": "lib/index.js",
   "directories": {
