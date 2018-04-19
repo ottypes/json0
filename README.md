@@ -14,7 +14,7 @@ The JSON OT type supports the following operations:
 
 JSON0 is an *invertable* type - which is to say, all operations have an inverse
 operation which will undo the original op. As such, all operations which delete
-content add the content to be deleted inline in the operation.
+content have the content to be deleted inline in the operation.
 
 But its not perfect - here's a list of things it *cannot* do:
 
@@ -303,7 +303,7 @@ out into the share/ottypes library and its finally landed here.
 The type uses the list-of-op-components model, where each operation makes a
 series of individual changes to a document. Joseph now thinks this is a
 terrible idea because it doesn't scale well to large operations - it has
-(N<sup>2</sup> instead of 2N complexity).
+N<sup>2</sup> instead of 2N complexity.
 
 Jeremy and Joseph have talked about rewriting this library to instead make each
 operation be a sparse traversal of the document. But it was obnoxiously
