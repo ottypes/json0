@@ -72,10 +72,14 @@ genTests = (type) ->
 
   # Strings should be handled internally by the text type. We'll just do some basic sanity checks here.
   describe 'string', ->
-    describe '#apply()', -> it 'works', ->
-      assert.deepEqual 'abc', type.apply 'a', [{p:[1], si:'bc'}]
-      assert.deepEqual 'bc', type.apply 'abc', [{p:[0], sd:'a'}]
-      assert.deepEqual {x:'abc'}, type.apply {x:'a'}, [{p:['x', 1], si:'bc'}]
+    describe '#apply()', ->
+      it 'works', ->
+        assert.deepEqual 'abc', type.apply 'a', [{p:[1], si:'bc'}]
+        assert.deepEqual 'bc', type.apply 'abc', [{p:[0], sd:'a'}]
+        assert.deepEqual {x:'abc'}, type.apply {x:'a'}, [{p:['x', 1], si:'bc'}]
+
+      it 'throws when the deletion target does not match', ->
+        assert.throws -> type.apply 'abc', [{p:[0], sd:'x'}]
 
       it 'throws when the target is not a string', ->
         assert.throws -> type.apply [1], [{p: [0], si: 'a'}]
@@ -137,6 +141,10 @@ genTests = (type) ->
       it 'moves', ->
         assert.deepEqual ['a', 'b', 'c'], type.apply ['b', 'a', 'c'], [{p:[1], lm:0}]
         assert.deepEqual ['a', 'b', 'c'], type.apply ['b', 'a', 'c'], [{p:[0], lm:1}]
+
+      it 'throws when the deletion target does not match', ->
+        assert.throws -> type.apply ['a', 'b', 'c'], [{p:[0], ld: 'x'}]
+        assert.throws -> type.apply ['a', 'b', 'c'], [{p:[0], li: 'd', ld: 'x'}]
 
       it 'throws when keying a list replacement with a string', ->
         assert.throws -> type.apply ['a', 'b', 'c'], [{p: ['0'], li: 'x', ld: 'a'}]
@@ -417,6 +425,11 @@ genTests = (type) ->
     it 'An attempt to re-delete a key becomes a no-op', ->
       assert.deepEqual [], type.transform [{p:['k'], od:'x'}], [{p:['k'], od:'x'}], 'left'
       assert.deepEqual [], type.transform [{p:['k'], od:'x'}], [{p:['k'], od:'x'}], 'right'
+
+    it 'throws when the deletion target does not match', ->
+      assert.throws -> type.apply {x:'a'}, [{p:['x'], od: 'b'}]
+      assert.throws -> type.apply {x:'a'}, [{p:['x'], oi: 'c', od: 'b'}]
+      assert.throws -> type.apply {x:'a'}, [{p:['x'], oi: 'b'}]
 
     it 'throws when the insertion key is a number', ->
       assert.throws -> type.apply {'1':'a'}, [{p:[2], oi: 'a'}]
