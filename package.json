@@ -1,7 +1,7 @@
 {
-  "name": "@houshuang/ot-json0",
-  "version": "1.2.0",
-  "description": "JSON OT type",
+  "name": "@minervaproject/ot-json0",
+  "version": "1.3.0",
+  "description": "JSON OT type, fork of sharedb/ot-json0@1.2.0",
   "main": "lib/index.js",
   "directories": {
     "test": "test"
