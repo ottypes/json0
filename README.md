@@ -2,6 +2,42 @@
 
 The JSON OT type can be used to edit arbitrary JSON documents.
 
+It has been forked from https://github.com/ottypes/json0 and modified to add Presence.
+
+## Presence
+
+(inspired by https://github.com/Teamwork/ot-rich-text#presence)
+
+The shape of our presence data is as follows:
+
+```
+{
+    u: '123', // user ID
+    c: 8, // number of changes made by this user
+    s: [ // list of selections
+        [ 1, 1 ], // collapsed selection
+        [ 5, 7 ], // forward selection
+        [ 9, 4 ] // backward selection
+    ]
+}
+```
+
+Each selection listed in `s` ends with a 2-element array containing the selection start index and the selection end index. The elements in the array preceeding the last two represent the path of a `text0` entry within the `json0` data structure.
+
+For example, the following entry in the `s` array represents the user's cursor position within the `content` field (`data.content`):
+
+```
+['content', 2, 2]
+```
+
+We can access deeply nested entries with this structure as well. For example, the following `s` entry represents a text selection in `data.files[3].text`:
+
+```
+['files', 3, 'text', 4, 7]
+```
+
+The rest of the README content is from the original repo https://github.com/ottypes/json0.
+
 ## Features
 
 The JSON OT type supports the following operations:
