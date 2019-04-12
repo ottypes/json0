@@ -303,8 +303,8 @@ The shape of our presence data is as follows:
 ```js
 [
   'some', 'path', // Path of the presence.
-  'ot-rich-text', // Type of the presence (an OT type).
-  {               // Presence object at this path (structure is specific to the OT type).
+  'ot-rich-text', // Subtype of the presence (a registered subtype).
+  {               // Opaque presence object (subtype-specific structure).
     u: '123',     // An example of an ot-rich-text presence object.
     c: 8,
     s: [ [ 1, 1 ], [ 5, 7 ]]
