@@ -5,8 +5,8 @@ const { createPresence, transformPresence } = json;
 //
 //// These tests are inspired by the ones found here:
 //// https://github.com/Teamwork/ot-rich-text/blob/master/test/Operation.js
-describe('createPresence', () => {
-  it('basic tests', () => {
+describe.only('presence', () => {
+  it('createPresence', () => {
     const presence = { u: '5', c: 8, s: [[1, 2], [9, 5]] };
     assert.strictEqual(createPresence(presence), presence);
   });
