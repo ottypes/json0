@@ -1,20 +1,22 @@
 const assert = require('assert');
 const json = require('../lib/json0');
-const richText = require('@teamwork/ot-rich-text')
+const otRichText = require('@teamwork/ot-rich-text')
+
+const { createInsertText } = otRichText.Action
+
+json.registerSubtype(otRichText.type);
 
 const { createPresence, transformPresence } = json;
 
-const samplePresence = {
-  u: '123',            // User ID.
-  c: 8,                // Change count for this user (for change detection).
-  p: ['some', 'path'], // Path of the sub-presence object.
-  t: 'ot-rich-text',   // Type of the sub-presence object (an OT type).
-  s: {                 // Sub-presence object at this path (specific to the OT type).
-    u: '123',          // An example of an ot-rich-text presence object.
+const samplePresence = [
+  'some', 'path', // Path of the presence.
+  'ot-rich-text', // Subtype of the presence (a registered subtype).
+  {               // Opaque presence object (subtype-specific structure).
+    u: '123',     // An example of an ot-rich-text presence object.
     c: 8,
     s: [ [ 1, 1 ], [ 5, 7 ]]
   }
-}
+];
 
 //
 //// These tests are inspired by the ones found here:
@@ -36,21 +38,31 @@ describe.only('json0 presence', () => {
         samplePresence
       );
     });
+    it('should transform by top level op', () => {
+
+      const o = [
+        createInsertText('a')
+      ];
+
+      const op = [{
+        p: ['some', 'path'],
+        t: otRichText.type.name,
+        o
+      }];
+
+      const isOwnOp = true;
+
+      assert.deepEqual(
+        transformPresence( samplePresence, op, isOwnOp),
+        samplePresence.slice(0, samplePresence.length - 1).concat(
+          otRichText.type.transformPresence(samplePresence[samplePresence.length - 1], o, isOwnOp)
+        )
+      );
+    });
   });
 });
 //
 //describe('transformPresence', () => {
-//  it('basic tests', () => {
-//    assert.deepEqual(
-//      transformPresence({ u: 'user', c: 8, s: [[5, 7]] }, [], true),
-//      { u: 'user', c: 8, s: [[5, 7]] }
-//    );
-//    assert.deepEqual(
-//      transformPresence({ u: 'user', c: 8, s: [[5, 7]] }, [], false),
-//      { u: 'user', c: 8, s: [[5, 7]] }
-//    );
-//  });
-//
 //  it('top level string operations', () => {
 //    // Before selection
 //    assert.deepEqual(
