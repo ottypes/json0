@@ -304,8 +304,8 @@ The shape of our presence data is as follows:
 {
   u: '123',            // User ID.
   c: 8,                // Change count for this user (for change detection).
-  p: ['some', 'path'], // Path for this presence object.
-  t: 'ot-rich-text',   // Type for this presence object (an OT type).
+  p: ['some', 'path'], // Path of the sub-presence object.
+  t: 'ot-rich-text',   // Type of the sub-presence object (an OT type).
   s: {                 // Sub-presence object at this path (specific to the OT type).
     u: '123',          // An example of an ot-rich-text presence object.
     c: 8,

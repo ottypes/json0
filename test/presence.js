@@ -1,14 +1,41 @@
-var assert = require('assert');
-var json = require('../lib/json0');
+const assert = require('assert');
+const json = require('../lib/json0');
+const richText = require('@teamwork/ot-rich-text')
 
 const { createPresence, transformPresence } = json;
+
+const samplePresence = {
+  u: '123',            // User ID.
+  c: 8,                // Change count for this user (for change detection).
+  p: ['some', 'path'], // Path of the sub-presence object.
+  t: 'ot-rich-text',   // Type of the sub-presence object (an OT type).
+  s: {                 // Sub-presence object at this path (specific to the OT type).
+    u: '123',          // An example of an ot-rich-text presence object.
+    c: 8,
+    s: [ [ 1, 1 ], [ 5, 7 ]]
+  }
+}
+
 //
 //// These tests are inspired by the ones found here:
 //// https://github.com/Teamwork/ot-rich-text/blob/master/test/Operation.js
-describe.only('presence', () => {
-  it('createPresence', () => {
-    const presence = { u: '5', c: 8, s: [[1, 2], [9, 5]] };
-    assert.strictEqual(createPresence(presence), presence);
+describe.only('json0 presence', () => {
+  describe('createPresence', () => {
+    it('should return the passed in presence object', () => {
+      assert.strictEqual(createPresence(samplePresence), samplePresence);
+    });
+  });
+  describe('transformPresence', () => {
+    it('should preserve original presence in case of no-op', () => {
+      assert.deepEqual(
+        transformPresence(samplePresence, [], true),
+        samplePresence
+      );
+      assert.deepEqual(
+        transformPresence(samplePresence, [], false),
+        samplePresence
+      );
+    });
   });
 });
 //
