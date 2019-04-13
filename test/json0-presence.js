@@ -37,7 +37,7 @@ describe.only('json0 presence', () => {
         samplePresence
       );
     });
-    it('should transform by op with matching path and subtype', () => {
+    it('should transform by subtype op with matching path and subtype', () => {
 
       const o = [ createInsertText('a') ];
 
@@ -58,7 +58,7 @@ describe.only('json0 presence', () => {
     });
 
     it('should transform by op with multiple components', () => {
-      const o1 = [ createInsertText('a') ];
+      const o1 = [ createInsertText('foo') ];
       const o2 = [ createRetain(3), createDelete(2), createInsertText('a') ];
 
       let s = samplePresence.s;
@@ -96,6 +96,16 @@ describe.only('json0 presence', () => {
       );
     });
   });
+  //it('should transform by text op with matching path and subtype', () => {
+  //  const op = [{ p: 0, si: 'a' }];
+  //  const isOwnOp = true;
+  //  assert.deepEqual(
+  //    transformPresence( samplePresence, op, isOwnOp),
+  //    Object.assign({}, samplePresence, {
+  //      s: otRichText.type.transformPresence(samplePresence.s, o, isOwnOp)
+  //    })
+  //  );
+  //});
 });
 //
 //describe('transformPresence', () => {
