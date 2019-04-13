@@ -61,10 +61,23 @@ describe.only('json0 presence', () => {
     });
 
     it('should not transform by op with matching path and non-matching subtype', () => {
-      const o = [ createInsertText('a') ];
-      const op = [{ p: ['some', 'path'], t: 'some-invalid-name', o }];
       assert.deepEqual(
-        transformPresence( samplePresence, op ),
+        transformPresence( samplePresence, [{
+          p: ['some', 'path'],
+          t: 'some-invalid-name',
+          o: [ createInsertText('a') ]
+        }] ),
+        samplePresence
+      );
+    });
+
+    it('should not transform by op with non-matching path and matching subtype', () => {
+      assert.deepEqual(
+        transformPresence( samplePresence, [{
+          p: ['some', 'other', 'path'],
+          t: otRichText.type.name,
+          o: [ createInsertText('a') ]
+        }] ),
         samplePresence
       );
     });
