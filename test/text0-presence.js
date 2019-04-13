@@ -1,88 +1,81 @@
 const assert = require('assert');
-const json = require('../lib/json0');
-const otRichText = require('@teamwork/ot-rich-text')
+const text = require('../lib/text0');
 
-const { createInsertText } = otRichText.Action
+const { createPresence, transformPresence } = text;
 
-json.registerSubtype(otRichText.type);
+// Inspired by ot-rich-text presence structure.
+const samplePresence = {
+  u: '123',
+  c: 8,
+  s: [ [ 1, 1 ], [ 5, 7 ]]
+};
 
-const { createPresence, transformPresence } = json;
-
-const samplePresence = [
-  'some', 'path', // Path of the presence.
-  'ot-rich-text', // Subtype of the presence (a registered subtype).
-  {               // Opaque presence object (subtype-specific structure).
-    u: '123',     // An example of an ot-rich-text presence object.
-    c: 8,
-    s: [ [ 1, 1 ], [ 5, 7 ]]
-  }
-];
-
-//
-//// These tests are inspired by the ones found here:
-//// https://github.com/Teamwork/ot-rich-text/blob/master/test/Operation.js
-describe.only('json0 presence', () => {
+// These tests are inspired by the ones found here:
+// https://github.com/Teamwork/ot-rich-text/blob/master/test/Operation.js
+describe.only('text0 presence', () => {
   describe('createPresence', () => {
     it('should return the passed in presence object', () => {
       assert.strictEqual(createPresence(samplePresence), samplePresence);
     });
   });
-  describe('transformPresence', () => {
-    it('should preserve original presence in case of no-op', () => {
-      assert.deepEqual(
-        transformPresence(samplePresence, [], true),
-        samplePresence
-      );
-      assert.deepEqual(
-        transformPresence(samplePresence, [], false),
-        samplePresence
-      );
-    });
-    it('should transform by op with matching path and subtype', () => {
+  // describe('transformPresence', () => {
+  //   it('should preserve original presence in case of no-op', () => {
+  //     assert.deepEqual(
+  //       transformPresence(samplePresence, [], true),
+  //       samplePresence
+  //     );
+  //     assert.deepEqual(
+  //       transformPresence(samplePresence, [], false),
+  //       samplePresence
+  //     );
+  //   });
+  //   it('should transform by op with matching path and subtype', () => {
 
-      const o = [
-        createInsertText('a')
-      ];
+  //     const o = [
+  //       createInsertText('a')
+  //     ];
 
-      const op = [{
-        p: ['some', 'path'],
-        t: otRichText.type.name,
-        o
-      }];
+  //     const op = [{
+  //       p: ['some', 'path'],
+  //       t: otRichText.type.name,
+  //       o
+  //     }];
 
-      const isOwnOp = true;
+  //     const isOwnOp = true;
 
-      assert.deepEqual(
-        transformPresence( samplePresence, op, isOwnOp),
-        samplePresence.slice(0, samplePresence.length - 1).concat(
-          otRichText.type.transformPresence(samplePresence[samplePresence.length - 1], o, isOwnOp)
-        )
-      );
-    });
+  //     assert.deepEqual(
+  //       transformPresence( samplePresence, op, isOwnOp),
+  //       samplePresence.slice(0, samplePresence.length - 1).concat(
+  //         otRichText.type.transformPresence(samplePresence[samplePresence.length - 1], o, isOwnOp)
+  //       )
+  //     );
+  //   });
 
-    it('should not transform by op with matching path and non-matching subtype', () => {
-      assert.deepEqual(
-        transformPresence( samplePresence, [{
-          p: ['some', 'path'],
-          t: 'some-invalid-name',
-          o: [ createInsertText('a') ]
-        }] ),
-        samplePresence
-      );
-    });
+  //   it('should not transform by op with matching path and non-matching subtype', () => {
+  //     assert.deepEqual(
+  //       transformPresence( samplePresence, [{
+  //         p: ['some', 'path'],
+  //         t: 'some-invalid-name',
+  //         o: [ createInsertText('a') ]
+  //       }] ),
+  //       samplePresence
+  //     );
+  //   });
 
-    it('should not transform by op with non-matching path and matching subtype', () => {
-      assert.deepEqual(
-        transformPresence( samplePresence, [{
-          p: ['some', 'other', 'path'],
-          t: otRichText.type.name,
-          o: [ createInsertText('a') ]
-        }] ),
-        samplePresence
-      );
-    });
-  });
+  //   it('should not transform by op with non-matching path and matching subtype', () => {
+  //     assert.deepEqual(
+  //       transformPresence( samplePresence, [{
+  //         p: ['some', 'other', 'path'],
+  //         t: otRichText.type.name,
+  //         o: [ createInsertText('a') ]
+  //       }] ),
+  //       samplePresence
+  //     );
+  //   });
+  // });
 });
+
+//
 //
 //describe('transformPresence', () => {
 //  it('top level string operations', () => {
