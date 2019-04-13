@@ -59,7 +59,6 @@ describe.only('text0 presence', () => {
         Object.assign({}, samplePresence, { s: [ [ 1, 1 ], [ 6, 8 ]] })
       );
     });
-
   });
 });
 //  it('top level string operations', () => {
