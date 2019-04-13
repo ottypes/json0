@@ -25,9 +25,13 @@ const sampleTextPresence = Object.assign({}, samplePresence, {
   t: 'text0'
 });
 
+// Sample presence object indicating only that
+// the user has "joined" the document at the top level.
+const samplePathOnlyPresence = { p: [] };
+
 //// These tests are inspired by the ones found here:
 //// https://github.com/Teamwork/ot-rich-text/blob/master/test/Operation.js
-describe.only('json0 presence', () => {
+describe('json0 presence', () => {
   describe('createPresence', () => {
     it('should return the passed in presence object', () => {
       assert.strictEqual(createPresence(samplePresence), samplePresence);
@@ -133,6 +137,16 @@ describe.only('json0 presence', () => {
 
       // Ensure the original op survives.
       assert.deepEqual(op, opClone);
+    });
+
+    it('should not break when given path-only presence', () => {
+      assert.deepEqual(
+        transformPresence(samplePathOnlyPresence, [{
+          p: ['some', 'path', 0],
+          si: 'a'
+        }]),
+        samplePathOnlyPresence
+      );
     });
   });
 });
