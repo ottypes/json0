@@ -38,7 +38,7 @@ describe.only('json0 presence', () => {
         samplePresence
       );
     });
-    it('should transform by top level op', () => {
+    it('should transform by op with matching path and subtype', () => {
 
       const o = [
         createInsertText('a')
@@ -57,6 +57,15 @@ describe.only('json0 presence', () => {
         samplePresence.slice(0, samplePresence.length - 1).concat(
           otRichText.type.transformPresence(samplePresence[samplePresence.length - 1], o, isOwnOp)
         )
+      );
+    });
+
+    it('should not transform by op with matching path and non-matching subtype', () => {
+      const o = [ createInsertText('a') ];
+      const op = [{ p: ['some', 'path'], t: 'some-invalid-name', o }];
+      assert.deepEqual(
+        transformPresence( samplePresence, op ),
+        samplePresence
       );
     });
   });
