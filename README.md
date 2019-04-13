@@ -301,18 +301,16 @@ offset in a string. `TEXT` must be contained at the location specified.
 The shape of our presence data is as follows:
 
 ```js
-[
-  'some', 'path', // Path of the presence.
-  'ot-rich-text', // Subtype of the presence (a registered subtype).
-  {               // Opaque presence object (subtype-specific structure).
-    u: '123',     // An example of an ot-rich-text presence object.
+{
+  p: ['some', 'path'], // Path of the presence.
+  t: 'ot-rich-text',   // Subtype of the presence (a registered subtype).
+  s: {                 // Opaque presence object (subtype-specific structure).
+    u: '123',          // An example of an ot-rich-text presence object.
     c: 8,
     s: [ [ 1, 1 ], [ 5, 7 ]]
   }
-]
+}
 ```
-
-The rest of the README content is from the original repo https://github.com/ottypes/json0.
 
 # Commentary
 

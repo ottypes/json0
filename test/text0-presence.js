@@ -12,7 +12,7 @@ const samplePresence = {
 
 // These tests are inspired by the ones found here:
 // https://github.com/Teamwork/ot-rich-text/blob/master/test/Operation.js
-describe.only('text0 presence', () => {
+describe('text0 presence', () => {
   describe('createPresence', () => {
     it('should return the passed in presence object', () => {
       assert.strictEqual(createPresence(samplePresence), samplePresence);

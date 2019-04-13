@@ -6,21 +6,21 @@ const { createInsertText } = otRichText.Action
 
 json.registerSubtype(otRichText.type);
 
-const { createPresence, transformPresence } = json;
+const { createPresence, transformPresence, unpackPresence } = json;
 
-const samplePresence = [
-  'some', 'path', // Path of the presence.
-  'ot-rich-text', // Subtype of the presence (a registered subtype).
-  {               // Opaque presence object (subtype-specific structure).
-    u: '123',     // An example of an ot-rich-text presence object.
+const samplePresence = {
+  p: ['some', 'path'], // Path of the presence.
+  t: 'ot-rich-text',   // Subtype of the presence (a registered subtype).
+  s: {                 // Opaque presence object (subtype-specific structure).
+    u: '123',          // An example of an ot-rich-text presence object.
     c: 8,
     s: [ [ 1, 1 ], [ 5, 7 ]]
   }
-];
+}
 
 //// These tests are inspired by the ones found here:
 //// https://github.com/Teamwork/ot-rich-text/blob/master/test/Operation.js
-describe('json0 presence', () => {
+describe.only('json0 presence', () => {
   describe('createPresence', () => {
     it('should return the passed in presence object', () => {
       assert.strictEqual(createPresence(samplePresence), samplePresence);
@@ -53,9 +53,9 @@ describe('json0 presence', () => {
 
       assert.deepEqual(
         transformPresence( samplePresence, op, isOwnOp),
-        samplePresence.slice(0, samplePresence.length - 1).concat(
-          otRichText.type.transformPresence(samplePresence[samplePresence.length - 1], o, isOwnOp)
-        )
+        Object.assign({}, samplePresence, {
+          s: otRichText.type.transformPresence(samplePresence.s, o, isOwnOp)
+        })
       );
     });
 
