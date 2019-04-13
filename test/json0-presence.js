@@ -2,7 +2,7 @@ const assert = require('assert');
 const json = require('../lib/json0');
 const otRichText = require('@teamwork/ot-rich-text')
 
-const { createInsertText } = otRichText.Action
+const { createInsertText, createRetain, createDelete } = otRichText.Action
 
 json.registerSubtype(otRichText.type);
 
@@ -39,9 +39,7 @@ describe.only('json0 presence', () => {
     });
     it('should transform by op with matching path and subtype', () => {
 
-      const o = [
-        createInsertText('a')
-      ];
+      const o = [ createInsertText('a') ];
 
       const op = [{
         p: ['some', 'path'],
@@ -59,24 +57,41 @@ describe.only('json0 presence', () => {
       );
     });
 
+    it('should transform by op with multiple components', () => {
+      const o1 = [ createInsertText('a') ];
+      const o2 = [ createRetain(3), createDelete(2), createInsertText('a') ];
+
+      let s = samplePresence.s;
+      s = otRichText.type.transformPresence(s, o1);
+      s = otRichText.type.transformPresence(s, o2);
+
+      assert.deepEqual(
+        transformPresence(samplePresence, [
+          { p: ['some', 'path'], t: otRichText.type.name, o: o1 },
+          { p: ['some', 'path'], t: otRichText.type.name, o: o2 }
+        ]),
+        Object.assign({}, samplePresence, { s })
+      );
+    });
+
     it('should not transform by op with matching path and non-matching subtype', () => {
       assert.deepEqual(
-        transformPresence( samplePresence, [{
+        transformPresence(samplePresence, [{
           p: ['some', 'path'],
           t: 'some-invalid-name',
           o: [ createInsertText('a') ]
-        }] ),
+        }]),
         samplePresence
       );
     });
 
     it('should not transform by op with non-matching path and matching subtype', () => {
       assert.deepEqual(
-        transformPresence( samplePresence, [{
+        transformPresence(samplePresence, [{
           p: ['some', 'other', 'path'],
           t: otRichText.type.name,
           o: [ createInsertText('a') ]
-        }] ),
+        }]),
         samplePresence
       );
     });
