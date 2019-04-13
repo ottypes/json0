@@ -18,6 +18,7 @@ describe.only('text0 presence', () => {
       assert.strictEqual(createPresence(samplePresence), samplePresence);
     });
   });
+
   describe('transformPresence', () => {
     it('should preserve original presence in case of no-op', () => {
       assert.deepEqual(
@@ -29,16 +30,33 @@ describe.only('text0 presence', () => {
         samplePresence
       );
     });
-    it('should transform against string insertion before selection', () => {
+
+    it('should transform against string insertion', () => {
       assert.deepEqual(
         transformPresence(
           samplePresence,
-          [{ p: [], i: 'a' }], // Insert the 'a' character at position 0.
+          [{ p: 0, i: 'a' }], // Insert the 'a' character at position 0.
           true
         ),
         Object.assign({}, samplePresence, {
           s: [ [ 2, 2 ], [ 6, 8 ]]
         })
+      );
+    });
+
+    it('should transform against own string insertion at presence position', () => {
+      const isOwnOperation = true;
+      assert.deepEqual(
+        transformPresence( samplePresence, [{ p: 1, i: 'a' }], isOwnOperation),
+        Object.assign({}, samplePresence, { s: [ [ 2, 2 ], [ 6, 8 ]] })
+      );
+    });
+
+    it('should transform against non-own string insertion at presence position', () => {
+      const isOwnOperation = false;
+      assert.deepEqual(
+        transformPresence( samplePresence, [{ p: 1, i: 'a' }], isOwnOperation),
+        Object.assign({}, samplePresence, { s: [ [ 1, 1 ], [ 6, 8 ]] })
       );
     });
 
