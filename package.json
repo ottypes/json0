@@ -1,6 +1,6 @@
 {
-  "name": "ot-json0",
-  "version": "1.1.0",
+  "name": "@datavis-tech/ot-json0",
+  "version": "1.2.0",
   "description": "JSON OT type",
   "main": "lib/index.js",
   "directories": {
