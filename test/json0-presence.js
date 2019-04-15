@@ -29,8 +29,8 @@ const sampleTextPresence = Object.assign({}, samplePresence, {
 // the user has "joined" the document at the top level.
 const samplePathOnlyPresence = { p: [] };
 
-//// These tests are inspired by the ones found here:
-//// https://github.com/Teamwork/ot-rich-text/blob/master/test/Operation.js
+// These tests are inspired by the ones found here:
+// https://github.com/Teamwork/ot-rich-text/blob/master/test/Operation.js
 describe('json0 presence', () => {
   describe('createPresence', () => {
     it('should return the passed in presence object', () => {
