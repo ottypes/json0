@@ -312,6 +312,13 @@ The shape of our presence data is as follows:
 }
 ```
 
+Here's a demo https://github.com/datavis-tech/json0-presence-demo
+
+![presence](https://user-images.githubusercontent.com/68416/56134824-ffac3400-5fac-11e9-89a1-c60064c3eb67.gif)
+
+![selections](https://user-images.githubusercontent.com/68416/56134832-033fbb00-5fad-11e9-9274-a19b2287c5b1.gif)
+
+
 # Commentary
 
 This library was written a couple of years ago by [Jeremy Apthorp](https://github.com/nornagon). It was
