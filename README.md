@@ -2,6 +2,27 @@
 
 The JSON OT type can be used to edit arbitrary JSON documents.
 
+Forked from [ottypes/json0](https://github.com/ottypes/json0) to implement [presence](https://github.com/ottypes/docs/issues/29).
+
+Current status: Presence is basically working, but it's only transformed by subtype ops. Remaining work includes transforming presence by ops that are not text (`si`, `sd`) or subtype ops. Includes `li`, `ld`, `lm`, `oi`, `od`. The goal is that one day this fork will be merged into ottypes/json0 via this PR: [ottypes/json0: Presence](https://github.com/ottypes/json0/pull/31).
+
+In the mean time, this fork is published on NPM as [@datavis-tech/ot-json0](https://www.npmjs.com/package/@datavis-tech/ot-json0). If you want to try it out:
+
+```
+npm install -S @datavis-tech/ot-json0
+```
+
+To [use it as the default ShareDB OT Type](https://github.com/share/sharedb/issues/284), you'll need to do the following (in both client and server):
+
+```js
+const json0 = require('fork-of-ot-json0');
+const ShareDB = require('sharedb'); // or require('sharedb/lib/client');
+ShareDB.types.register(json0.type);
+ShareDB.types.defaultType = json0.type;
+```
+
+To use the presence feature, you'll need to use the [Teamwork fork of ShareDB](https://github.com/teamwork/sharedb#readme) until the [ShareDB Presence PR](https://github.com/share/sharedb/pull/207) is merged.
+
 ## Features
 
 The JSON OT type supports the following operations:
@@ -293,6 +314,31 @@ Delete `TEXT` at the location specified by `PATH`. The path must specify an
 offset in a string. `TEXT` must be contained at the location specified.
 
 ---
+
+## Presence
+
+(inspired by https://github.com/Teamwork/ot-rich-text#presence)
+
+The shape of our presence data is as follows:
+
+```js
+{
+  p: ['some', 'path'], // Path of the presence.
+  t: 'ot-rich-text',   // Subtype of the presence (a registered subtype).
+  s: {                 // Opaque presence object (subtype-specific structure).
+    u: '123',          // An example of an ot-rich-text presence object.
+    c: 8,
+    s: [ [ 1, 1 ], [ 5, 7 ]]
+  }
+}
+```
+
+Here's a demo https://github.com/datavis-tech/json0-presence-demo
+
+![presence](https://user-images.githubusercontent.com/68416/56134824-ffac3400-5fac-11e9-89a1-c60064c3eb67.gif)
+
+![selections](https://user-images.githubusercontent.com/68416/56134832-033fbb00-5fad-11e9-9274-a19b2287c5b1.gif)
+
 
 # Commentary
 
