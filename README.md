@@ -2,6 +2,27 @@
 
 The JSON OT type can be used to edit arbitrary JSON documents.
 
+Forked from [ottypes/json0](https://github.com/ottypes/json0) to implement [presence](https://github.com/ottypes/docs/issues/29).
+
+Current status: Presence is basically working, but it's only transformed by subtype ops. Remaining work includes transforming presence by ops that are not text (`si`, `sd`) or subtype ops. Includes `li`, `ld`, `lm`, `oi`, `od`. The goal is that one day this fork will be merged into ottypes/json0 via this PR: [ottypes/json0: Presence](https://github.com/ottypes/json0/pull/31).
+
+In the mean time, this fork is published on NPM as [@datavis-tech/ot-json0](https://www.npmjs.com/package/@datavis-tech/ot-json0). If you want to try it out:
+
+```
+npm install -S @datavis-tech/ot-json0
+```
+
+To [use it as the default ShareDB OT Type](https://github.com/share/sharedb/issues/284), you'll need to do the following (in both client and server):
+
+```js
+const json0 = require('fork-of-ot-json0');
+const ShareDB = require('sharedb'); // or require('sharedb/lib/client');
+ShareDB.types.register(json0.type);
+ShareDB.types.defaultType = json0.type;
+```
+
+To use the presence feature, you'll need to use the [Teamwork fork of ShareDB](https://github.com/teamwork/sharedb#readme) until the [ShareDB Presence PR](https://github.com/share/sharedb/pull/207) is merged.
+
 ## Features
 
 The JSON OT type supports the following operations:
