@@ -1,6 +1,6 @@
 {
   "name": "@minervaproject/ot-json0",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "JSON OT type",
   "main": "lib/index.js",
   "directories": {
