@@ -96,7 +96,7 @@ Lists and objects have the same set of operations (*Insert*, *Delete*,
 *Replace*, *Move*) but their semantics are very different. List operations
 shuffle adjacent list items left or right to make space (or to remove space).
 Object operations do not. You should pick the data structure which will give
-you the behaviour you want when you design your data model. 
+you the behaviour you want when you design your data model.
 
 To make it clear what the semantics of operations will be, list operations and
 object operations are named differently. (`li`, `ld`, `lm` for lists and `oi`,
@@ -201,9 +201,9 @@ There is (unfortunately) no equivalent for list move with objects.
 ### Subtype operations
 
 Usage:
-  
+
     {p:PATH, t:SUBTYPE, o:OPERATION}
-    
+
 `PATH` is the path to the object that will be modified by the subtype.
 `SUBTYPE` is the name of the subtype, e.g. `"text0"`.
 `OPERATION` is the subtype operation itself.
@@ -242,7 +242,7 @@ the subtype operation.
 Usage:
 
     {p:PATH, t:'text0', o:[{p:OFFSET, i:TEXT}]}
-    
+
 Insert `TEXT` to the string specified by `PATH` at the position specified by `OFFSET`.
 
 ##### Delete from a string
@@ -250,7 +250,7 @@ Insert `TEXT` to the string specified by `PATH` at the position specified by `OF
 Usage:
 
     {p:PATH, t:'text0', o:[{p:OFFSET, d:TEXT}]}
-    
+
 Delete `TEXT` in the string specified by `PATH` at the position specified by `OFFSET`.
 
 ---
@@ -291,6 +291,18 @@ Usage:
 
 Delete `TEXT` at the location specified by `PATH`. The path must specify an
 offset in a string. `TEXT` must be contained at the location specified.
+
+## Options
+
+### Strict
+
+`json0` supports a "strict" mode which performs additional type checking of the
+ops on `apply()`. This mode is off by default to preserve backwards-compatibility,
+but can be enabled by setting the flag:
+
+```js
+type.options.strict = true
+```
 
 ---
 

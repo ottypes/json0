@@ -64,11 +64,18 @@ genTests = (type) ->
       c_s = type.apply leftHas, right_
       assert.deepEqual s_c, c_s
 
-    it 'throws when adding a string to a number', ->
-      assert.throws -> type.apply 1, [{p: [], na: 'a'}]
+    describe 'strict', ->
+      beforeEach ->
+        type.options.strict = true
 
-    it 'throws when adding a number to a string', ->
-      assert.throws -> type.apply 'a', [{p: [], na: 1}]
+      afterEach ->
+        type.options.strict = false
+
+      it 'throws when adding a string to a number', ->
+        assert.throws -> type.apply 1, [{p: [], na: 'a'}]
+
+      it 'throws when adding a number to a string', ->
+        assert.throws -> type.apply 'a', [{p: [], na: 1}]
 
   # Strings should be handled internally by the text type. We'll just do some basic sanity checks here.
   describe 'string', ->
@@ -138,23 +145,30 @@ genTests = (type) ->
         assert.deepEqual ['a', 'b', 'c'], type.apply ['b', 'a', 'c'], [{p:[1], lm:0}]
         assert.deepEqual ['a', 'b', 'c'], type.apply ['b', 'a', 'c'], [{p:[0], lm:1}]
 
-      it 'throws when keying a list replacement with a string', ->
-        assert.throws -> type.apply ['a', 'b', 'c'], [{p: ['0'], li: 'x', ld: 'a'}]
+    describe 'strict', ->
+      beforeEach ->
+        type.options.strict = true
 
-      it 'throws when keying a list insertion with a string', ->
-        assert.throws -> type.apply ['a', 'b', 'c'], [{p: ['0'], li: 'x'}]
+      afterEach ->
+        type.options.strict = false
 
-      it 'throws when keying a list deletion with a string', ->
-        assert.throws -> type.apply ['a', 'b', 'c'], [{p: ['0'], ld: 'a'}]
+        it 'throws when keying a list replacement with a string', ->
+          assert.throws -> type.apply ['a', 'b', 'c'], [{p: ['0'], li: 'x', ld: 'a'}]
 
-      it 'throws when keying a list move with a string', ->
-        assert.throws -> type.apply ['a', 'b', 'c'], [{p: ['0'], lm: 0}]
+        it 'throws when keying a list insertion with a string', ->
+          assert.throws -> type.apply ['a', 'b', 'c'], [{p: ['0'], li: 'x'}]
 
-      it 'throws when specifying a string as a list move target', ->
-        assert.throws -> type.apply ['a', 'b', 'c'], [{p: [1], lm: '0'}]
+        it 'throws when keying a list deletion with a string', ->
+          assert.throws -> type.apply ['a', 'b', 'c'], [{p: ['0'], ld: 'a'}]
 
-      it 'throws when an array index part-way through the path is a string', ->
-        assert.throws -> type.apply {arr:[{x:'a'}]}, [{p:['arr', '0', 'x'], od: 'a'}]
+        it 'throws when keying a list move with a string', ->
+          assert.throws -> type.apply ['a', 'b', 'c'], [{p: ['0'], lm: 0}]
+
+        it 'throws when specifying a string as a list move target', ->
+          assert.throws -> type.apply ['a', 'b', 'c'], [{p: [1], lm: '0'}]
+
+        it 'throws when an array index part-way through the path is a string', ->
+          assert.throws -> type.apply {arr:[{x:'a'}]}, [{p:['arr', '0', 'x'], od: 'a'}]
 
       ###
       'null moves compose to nops', ->
@@ -418,14 +432,21 @@ genTests = (type) ->
       assert.deepEqual [], type.transform [{p:['k'], od:'x'}], [{p:['k'], od:'x'}], 'left'
       assert.deepEqual [], type.transform [{p:['k'], od:'x'}], [{p:['k'], od:'x'}], 'right'
 
-    it 'throws when the insertion key is a number', ->
-      assert.throws -> type.apply {'1':'a'}, [{p:[2], oi: 'a'}]
+    describe 'strict', ->
+      beforeEach ->
+        type.options.strict = true
 
-    it 'throws when the deletion key is a number', ->
-      assert.throws -> type.apply {'1':'a'}, [{p:[1], od: 'a'}]
+      afterEach ->
+        type.options.strict = false
 
-    it 'throws when an object key part-way through the path is a number', ->
-      assert.throws -> type.apply {'1': {x: 'a'}}, [{p:[1, 'x'], od: 'a'}]
+      it 'throws when the insertion key is a number', ->
+        assert.throws -> type.apply {'1':'a'}, [{p:[2], oi: 'a'}]
+
+      it 'throws when the deletion key is a number', ->
+        assert.throws -> type.apply {'1':'a'}, [{p:[1], od: 'a'}]
+
+      it 'throws when an object key part-way through the path is a number', ->
+        assert.throws -> type.apply {'1': {x: 'a'}}, [{p:[1, 'x'], od: 'a'}]
 
   describe 'randomizer', ->
     @timeout 20000
