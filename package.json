@@ -6,6 +6,9 @@
   "directories": {
     "test": "test"
   },
+  "files": [
+    "lib"
+  ],
   "dependencies": {},
   "devDependencies": {
     "coffee-script": "^1.7.1",
