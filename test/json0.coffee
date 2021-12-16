@@ -222,6 +222,27 @@ genTests = (type) ->
         assert.deepEqual [{p:[100], si:'hi'}], type.compose [{p:[100], si:'h'}], [{p:[101], si:'i'}]
         assert.deepEqual [{p:[], t:'text0', o:[{p:100, i:'hi'}]}], type.compose [{p:[], t:'text0', o:[{p:100, i:'h'}]}], [{p:[], t:'text0', o:[{p:101, i:'i'}]}]
 
+    describe '#invertWithDoc()', ->
+      it 'passes the doc to the subtype', ->
+        op = null
+        doc = null
+
+        type.registerSubtype
+          name: 'invertible'
+          invertWithDoc: (o, d) ->
+            op = o
+            doc = d
+
+        type.invertWithDoc [{p: ['foo', 'bar'], t: 'invertible', o: [{increment: 1}]}], {foo: {bar: 5}}
+        assert.deepEqual [{increment: 1}], op
+        assert.deepEqual 5, doc
+
+      it 'throws if the subtype does not support inversion', ->
+        type.registerSubtype
+          name: 'not-invertible'
+
+        assert.throws -> type.invertWithDoc [{p: ['foo'], t: 'not-invertible', o: [{increment: 1}]}], {foo: 5}
+
     it 'moves ops on a moved element with the element', ->
       assert.deepEqual [{p:[10], ld:'x'}], type.transform [{p:[4], ld:'x'}], [{p:[4], lm:10}], 'left'
       assert.deepEqual [{p:[10, 1], si:'a'}], type.transform [{p:[4, 1], si:'a'}], [{p:[4], lm:10}], 'left'
