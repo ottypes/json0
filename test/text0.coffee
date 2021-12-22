@@ -112,6 +112,42 @@ describe 'text0', ->
       t [{d:'abc', p:10}, {d:'xyz', p:6}]
       t [{d:'abc', p:10}, {d:'xyz', p:11}]
 
+  describe '#transformPresence', ->
+    it 'transforms a zero-length range by an op before it', ->
+      assert.deepEqual {index: 13, length: 0}, text0.transformPresence {index: 10, length: 0}, [{p: 0, i: 'foo'}]
+
+    it 'does not transform a zero-length range by an op after it', ->
+      assert.deepEqual {index: 10, length: 0}, text0.transformPresence {index: 10, length: 0}, [{p: 20, i: 'foo'}]
+
+    it 'transforms a range with length by an op before it', ->
+      assert.deepEqual {index: 13, length: 3}, text0.transformPresence {index: 10, length: 3}, [{p: 0, i: 'foo'}]
+
+    it 'transforms a range with length by an op that deletes part of it', ->
+      assert.deepEqual {index: 9, length: 1}, text0.transformPresence {index: 10, length: 3}, [{p: 9, d: 'abc'}]
+
+    it 'transforms a range with length by an op that deletes the whole range', ->
+      assert.deepEqual {index: 9, length: 0}, text0.transformPresence {index: 10, length: 3}, [{p: 9, d: 'abcde'}]
+
+    it 'keeps extra metadata when transforming', ->
+      assert.deepEqual {index: 13, length: 0, meta: 'lorem ipsum'}, text0.transformPresence {index: 10, length: 0, meta: 'lorem ipsum'}, [{p: 0, i: 'foo'}]
+
+    it 'returns null when no presence is provided', ->
+      assert.deepEqual null, text0.transformPresence undefined, [{p: 0, i: 'foo'}]
+
+    it 'advances the cursor if inserting at own index', ->
+      assert.deepEqual {index: 13, length: 2}, text0.transformPresence {index: 10, length: 2}, [{p: 10, i: 'foo'}], true
+
+    it 'does not advance the cursor if not own op', ->
+      assert.deepEqual {index: 10, length: 5}, text0.transformPresence {index: 10, length: 2}, [{p: 10, i: 'foo'}], false
+
+    it 'does nothing if no op is provided', ->
+      assert.deepEqual {index: 10, length: 0}, text0.transformPresence {index: 10, length: 0}, undefined
+
+    it 'does not mutate the original range', ->
+      range = {index: 10, length: 0}
+      text0.transformPresence range, [{p: 0, i: 'foo'}]
+      assert.deepEqual {index: 10, length: 0}, range
+
 
   describe 'randomizer', -> it 'passes', ->
     @timeout 4000

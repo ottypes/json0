@@ -438,6 +438,67 @@ genTests = (type) ->
       fuzzer type, require('./json0-generator'), 1000
       delete type._testStringSubtype
 
+  describe '#transformPresence', ->
+    it 'moves presence touched directly with lm', ->
+      assert.deepEqual {p: ['x', 2], v: 0}, type.transformPresence {p: ['x', 1], v: 0}, [{p: ['x', 1], lm: 2}]
+
+    it 'does not move presence when touching other parts of the document', ->
+      assert.deepEqual {p: ['x', 1], v: 0}, type.transformPresence {p: ['x', 1], v: 0}, [{p: ['a'], oi: 'foo'}]
+
+    it 'moves presence indirectly moved by li', ->
+      assert.deepEqual {p: ['x', 3], v: 0}, type.transformPresence {p: ['x', 2], v: 0}, [{p: ['x', 0], li: 'foo'}]
+
+    it 'moves presence indirectly moved by ld', ->
+      assert.deepEqual {p: ['x', 1], v: 0}, type.transformPresence {p: ['x', 2], v: 0}, [{p: ['x', 0], ld: 'foo'}]
+
+    it 'moves deep presence moved by a higher li', ->
+      assert.deepEqual {p: ['x', 3, 'y'], v: 0}, type.transformPresence {p: ['x', 2, 'y'], v: 0}, [{p: ['x', 1], li: 'foo'}]
+
+    it 'removes presence when an object is overwritten', ->
+      assert.deepEqual null, type.transformPresence {p: ['x', 2], v: 0}, [{p: ['x', 2], oi: 'foo'}]
+
+    it 'removes presence when an object is deleted', ->
+      assert.deepEqual null, type.transformPresence {p: ['x', 2], v: 0}, [{p: ['x', 2], od: 'foo'}]
+
+    it 'removes presence when a list item is deleted', ->
+      assert.deepEqual null, type.transformPresence {p: ['x', 2], v: 0}, [{p: ['x', 2], ld: 'foo'}]
+
+    it 'moves presence as part of a series of op components', ->
+      assert.deepEqual {p: ['x', 2], v: 0}, type.transformPresence {p: ['x', 1], v: 0}, [{p: ['a'], oi: 'baz'}, {p: ['x', 1], lm: 2}]
+
+    it 'moves presence as part of a series of op components affecting the presence', ->
+      presence = {p: ['x', 3], v: 0}
+      op = [
+        {p: ['x', 3], lm: 2},
+        {p: ['x', 2], lm: 1},
+        {p: ['x', 0], li: 'foo'},
+      ]
+      assert.deepEqual {p: ['x', 2], v: 0}, type.transformPresence presence, op
+
+    it 'returns null when no presence is provided', ->
+      assert.deepEqual null, type.transformPresence undefined, [{p: ['x'], oi: 'foo'}]
+
+    it 'does nothing if no op is provided', ->
+      assert.deepEqual {p: ['x', 2], v: 0}, type.transformPresence {p: ['x', 2], v:0}, undefined
+
+    it 'does not mutate the original presence', ->
+      presence = {p: ['x', 2], v: 0}
+      type.transformPresence presence, [{p: ['x', 2], lm: 1}]
+      assert.deepEqual {p: ['x', 2], v: 0}, presence
+
+    it 'keeps extra metadata when tranforming', ->
+      assert.deepEqual {p: ['x', 1], v: 0, meta: 'foo'}, type.transformPresence {p: ['x', 2], v: 0, meta: 'foo'}, [{p: ['x', 2], lm: 1}]
+
+    it 'returns null for an invalid presence', ->
+      assert.deepEqual null, type.transformPresence {}, [{p: ['x', 1], lm: 2}]
+
+    describe 'text0', ->
+      it 'transforms presence by an si', ->
+        assert.deepEqual {p: ['x'], v: {index: 3, length: 1}}, type.transformPresence {p: ['x'], v: {index: 2, length: 1}}, [{p: ['x', 0], si: 'a'}]
+
+      it 'transforms presence by an sd', ->
+        assert.deepEqual {p: ['x'], v: {index: 2, length: 0}}, type.transformPresence {p: ['x'], v: {index: 3, length: 1}}, [{p: ['x', 2], sd: 'abc'}]
+
 describe 'json', ->
   describe 'native type', -> genTests nativetype
   #exports.webclient = genTests require('../helpers/webclient').types.json
