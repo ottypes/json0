@@ -294,6 +294,60 @@ offset in a string. `TEXT` must be contained at the location specified.
 
 ---
 
+## Presence
+
+`json0` has some limited support for presence information: information about
+clients' transient position within a document (eg their cursor or selection).
+
+It also supports presence in `text0`.
+
+### Format
+
+#### `json0`
+
+The format of a `json0` presence object follows a similar syntax to its ops:
+
+    {p: ['key', 123], v: 0}
+
+Where :
+
+ - `p` is the path to the client's position within the document
+ - `v` is the client's presence "value"
+
+The presence value `v` can take any arbitrary value or shape, unless the property
+is a subtype. In this case, the value in `v` will be passed to the subtype's own
+`transformPresence` method (see below for an example with `text0`).
+
+#### `text0`
+
+The `text0` presence takes the format of:
+
+    {index: 0, length: 5}
+
+Where:
+
+  - `index` is the start of the client's cursor
+  - `length` is the length of their selection (`0` for a collapsed selection)
+
+For example, given a string `'abc'`, a client's position could be represented as: `{index: 1, length: 1}` if they have the letter "b" highlighted.
+
+`text0` presence can be embedded within `json0`. For example, given this document:
+`{foo: 'abc'}`, the same highlight would be represented as:
+`{p: ['foo'], v: {index: 1, length: 1}}`
+
+### Limitations
+
+`json0` presence mostly exists to allow subtype presence updates for embedded
+documents.
+
+Moving embedded documents within a `json0` document has limited presence support,
+because `json0` has no concept of object moves. As such, `json0` will preserve
+presence information when performing a list move `lm`, but any `oi` or `od` ops
+will destroy presence information in the affected subtree, since these are
+destructive operations.
+
+---
+
 # Commentary
 
 This library was written a couple of years ago by [Jeremy Apthorp](https://github.com/nornagon). It was
