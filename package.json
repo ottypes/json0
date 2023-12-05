@@ -12,6 +12,7 @@
   "dependencies": {},
   "devDependencies": {
     "coffee-script": "^1.7.1",
+    "colors": "1.4.0",
     "mocha": "^9.0.2",
     "ot-fuzzer": "^1.0.0"
   },
